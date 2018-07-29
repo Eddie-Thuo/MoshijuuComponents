@@ -1,0 +1,15 @@
+{
+  "name": "moshijuu-search-bar",
+  "description": "Moshijuu Themed Search Bar",
+  "main": "moshijuu-search-bar.js",
+  "dependencies": {
+    "@polymer/paper-button": "^3.0.0-pre.20",
+    "@polymer/paper-input": "^3.0.0-pre.21",
+    "@polymer/polymer": "^3.0.0"
+  },
+  "devDependencies": {
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.0"
+  }
+}
