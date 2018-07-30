@@ -7,17 +7,28 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
  * @polymer
  * @demo demo/index.html
  */
+const definedSearchResults = ['Eddie', 'Joan' , 'Sam', 'Olivia'];
 class MoshijuuSearchBar extends PolymerElement {
   static get template() {
     return html`  
     <style>
     .container {
         width: 500px;
-        height: 70px;
+        height: 40px;
         border: 1px solid black;
         display: flex;
         flex-direction: row;
+        border-radius: 5px;
     }
+
+    .search-results-container {
+      width: 500px;
+      height: auto;
+      margin-top: 5px;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+
     input {
       width: inherit;
       height: inherit;
@@ -28,10 +39,37 @@ class MoshijuuSearchBar extends PolymerElement {
       margin-right: 7px;
       background: transparent;
     }
+
+    ul {
+        padding: 0px;
+    }
+
+    li {
+      list-style-type: none;
+      margin-left: 7px;
+      margin-right: 7px;
+    }
+
+    input, li {
+      font-size: 14px;
+    }
+
+    li:hover {
+      background-color: pink;
+    }
+
     </style>
 
     <div class="container">
-        <input type="text" placeholder$=[[placeholder]] >
+        <input type="text" placeholder$="[[placeholder]]" >
+    </div>
+    <!-- Unordered list of search results -->
+    <div class="search-results-container">
+      <ul>
+        <li>Result1</li>
+        <li>Result2</li>
+        <li>Result3</li>
+      </ul>
     </div>
     `;
   }
@@ -41,11 +79,27 @@ class MoshijuuSearchBar extends PolymerElement {
         type: String,
         value: 'Search Here...',
       },
+      _matches: {
+        type: Array
+      }
     };
   }
 
   ready() {
     super.ready();
+    this.input.addEventListener('input', (event) => {
+    this.filterSearchCriteria(event.target.value);
+    });
+  }
+
+  get input() {
+    return this.shadowRoot.querySelector('input');
+  }
+
+  filterSearchCriteria(value) {
+    this._matches = definedSearchResults.filter((result) => {
+        return result.toLowerCase().includes(value.toLowerCase());
+    });
   }
 }
 
