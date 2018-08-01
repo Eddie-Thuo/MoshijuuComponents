@@ -89,11 +89,22 @@ class MoshijuuSearchBar extends PolymerElement {
     super.ready();
     this.input.addEventListener('input', (event) => {
     this.filterSearchCriteria(event.target.value);
+    this.resultsTemplate(this._matches);
     });
   }
 
   get input() {
     return this.shadowRoot.querySelector('input');
+  }
+
+  resultsTemplate(matches) {
+    let resultsTemplate = '<ul>'
+    matches.forEach((result) => {
+      let listItem = '<li>' + result +  '</li>'; 
+      this.resultsTemplate += listItem;
+    });
+    str += '</ul>'
+    return resultsTemplate;
   }
 
   filterSearchCriteria(value) {
