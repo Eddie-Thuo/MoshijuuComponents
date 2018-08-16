@@ -14,7 +14,7 @@ class MoshijuuSearchBar extends PolymerElement {
     return html`
     <style>
     .container {
-        width: 500px;
+        max-width: 500px;
         height: 40px;
         border: 1px solid black;
         display: flex;
@@ -23,7 +23,7 @@ class MoshijuuSearchBar extends PolymerElement {
     }
 
     .search-results-container {
-      width: 500px;
+      max-width: 500px;
       height: auto;
       margin-top: 5px;
       border: 1px solid black;
@@ -109,13 +109,13 @@ class MoshijuuSearchBar extends PolymerElement {
   }
 
   resultsTemplate(matches) {
-    let resultsTemplate = '<ul>'
+    let template = '<ul>'
     matches.forEach((result) => {
       let listItem = '<li>' + result +  '</li>';
-      this.resultsTemplate += listItem;
+      template += listItem;
     });
-    str += '</ul>'
-    return resultsTemplate;
+    template += '</ul>'
+    return template;
   }
 
   filterSearchCriteria(value) {
