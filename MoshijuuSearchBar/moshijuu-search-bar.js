@@ -1,4 +1,5 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
+import '@polymer/iron-input/iron-input.js';
 /**
  * `moshijuu-search-bar`
  * Moshijuu Themed Search Bar
@@ -10,7 +11,7 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 const definedSearchResults = ['Eddie', 'Joan' , 'Sam', 'Olivia'];
 class MoshijuuSearchBar extends PolymerElement {
   static get template() {
-    return html`  
+    return html`
     <style>
     .container {
         width: 500px;
@@ -29,14 +30,22 @@ class MoshijuuSearchBar extends PolymerElement {
       border-radius: 5px;
     }
 
-    input {
-      width: inherit;
+    iron-input {
+      width: 100%;
       height: inherit;
       outline: none;
       border: 0px;
       padding: 0px;
       margin-left: 7px;
       margin-right: 7px;
+      background: transparent;
+    }
+
+    input {
+      width: 100%;
+      height: 100%;
+      outline: none;
+      border: 0px;
       background: transparent;
     }
 
@@ -61,7 +70,9 @@ class MoshijuuSearchBar extends PolymerElement {
     </style>
 
     <div class="container">
-        <input type="text" placeholder$="[[placeholder]]" >
+      <iron-input>
+        <input type="text" placeholder$="[[placeholder]]">
+       </iron-input>
     </div>
     <!-- Unordered list of search results -->
     <div class="search-results-container">
@@ -100,7 +111,7 @@ class MoshijuuSearchBar extends PolymerElement {
   resultsTemplate(matches) {
     let resultsTemplate = '<ul>'
     matches.forEach((result) => {
-      let listItem = '<li>' + result +  '</li>'; 
+      let listItem = '<li>' + result +  '</li>';
       this.resultsTemplate += listItem;
     });
     str += '</ul>'
