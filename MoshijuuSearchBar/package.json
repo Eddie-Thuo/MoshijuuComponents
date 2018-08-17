@@ -1,7 +1,8 @@
 {
-  "name": "moshijuu-search-bar",
+  "name": "@moshijuu/moshijuu-search-bar",
   "description": "Moshijuu Themed Search Bar",
-  "main": "moshijuu-search-bar.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Eddie-Thuo/MoshijuuComponents",
   "dependencies": {
     "@polymer/paper-button": "^3.0.0-pre.20",
     "@polymer/paper-input": "^3.0.0-pre.21",
