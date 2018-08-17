@@ -1,5 +1,6 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-input/iron-input.js';
+import '@polymer/polymer/lib/elements/dom-repeat.js';
 /**
  * `moshijuu-search-bar`
  * Moshijuu Themed Search Bar
@@ -8,7 +9,7 @@ import '@polymer/iron-input/iron-input.js';
  * @polymer
  * @demo demo/index.html
  */
-const definedSearchResults = ['Eddie', 'Joan' , 'Sam', 'Olivia'];
+const definedSearchResults = ['Eddie', 'Joan' , 'Sam', 'Olivia']
 class MoshijuuSearchBar extends PolymerElement {
   static get template() {
     return html`
@@ -28,6 +29,10 @@ class MoshijuuSearchBar extends PolymerElement {
       margin-top: 5px;
       border: 1px solid black;
       border-radius: 5px;
+    }
+
+    .empty {
+      border: 0;
     }
 
     iron-input {
@@ -71,15 +76,16 @@ class MoshijuuSearchBar extends PolymerElement {
 
     <div class="container">
       <iron-input>
-        <input type="text" placeholder$="[[placeholder]]">
+        <input type="text" placeholder$="[[placeholder]]" on-input="_handleInput">
        </iron-input>
     </div>
-    <!-- Unordered list of search results -->
-    <div class="search-results-container">
+    <div class$="[[_computeSearchContainerClass(_matches)]]">
       <ul>
-        <li>Result1</li>
-        <li>Result2</li>
-        <li>Result3</li>
+        <dom-repeat items="{{_matches}}">
+          <template>
+            <li>{{item}}</li>
+          </template>
+        </dom-repeat>
       </ul>
     </div>
     `;
@@ -96,26 +102,16 @@ class MoshijuuSearchBar extends PolymerElement {
     };
   }
 
-  ready() {
-    super.ready();
-    this.input.addEventListener('input', (event) => {
+  _handleInput(event) {
     this.filterSearchCriteria(event.target.value);
-    this.resultsTemplate(this._matches);
-    });
   }
 
-  get input() {
-    return this.shadowRoot.querySelector('input');
-  }
-
-  resultsTemplate(matches) {
-    let template = '<ul>'
-    matches.forEach((result) => {
-      let listItem = '<li>' + result +  '</li>';
-      template += listItem;
-    });
-    template += '</ul>'
-    return template;
+  _computeSearchContainerClass(matches) {
+    let cls = 'search-results-container';
+    if (matches.length === 0) {
+      cls += ' empty'
+    }
+    return cls;
   }
 
   filterSearchCriteria(value) {
