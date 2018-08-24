@@ -2,6 +2,8 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/paper-spinner/paper-spinner.js';
+import '@polymer/polymer/lib/elements/dom-if.js';
 import '@polymer/polymer/lib/elements/dom-repeat.js';
 /**
  * `moshijuu-search-bar`
@@ -17,19 +19,28 @@ class MoshijuuSearchBar extends PolymerElement {
     return html`
     <style>
     .container {
-        max-width: 500px;
         height: 40px;
-        border: 1px solid black;
+        box-shadow: 0px 6px 15px lightgray, 0px 0px 2px lightgray;
         display: flex;
         flex-direction: row;
         border-radius: 5px;
     }
 
+    .spinner-container {
+      margin-top: 5px;
+      height: 30px;
+      position: relative;
+    }
+
+    paper-spinner {
+      position: absolute;
+      left: calc(50% - 14px);
+    }
+
     .search-results-container {
-      max-width: 500px;
       height: auto;
       margin-top: 5px;
-      border: 1px solid black;
+      box-shadow: 0px 6px 12px lightgray, 0px 0px 2px lightgray;
       border-radius: 5px;
     }
 
@@ -53,6 +64,10 @@ class MoshijuuSearchBar extends PolymerElement {
       outline: none;
       border: 0px;
       background: transparent;
+    }
+
+    paper-icon-button {
+      color: #9E9E9E;
     }
 
     paper-icon-button.hovering:hover {
@@ -81,9 +96,9 @@ class MoshijuuSearchBar extends PolymerElement {
 
     <div class="container">
       <iron-input>
-        <input type="text" placeholder$="[[placeholder]]" on-input="_handleInput">
-       </iron-input>
-       <paper-icon-button class="hovering" icon$="[[searchIcon]]"></paper-icon-button>
+        <input type="text" placeholder$="[[placeholder]]" on-input="_handleInput" on-key>
+      </iron-input>
+      <paper-icon-button class="hovering" icon$="[[searchIcon]]"></paper-icon-button>
     </div>
     <div class$="[[_computeSearchContainerClass(_matches)]]">
       <ul>
@@ -100,8 +115,7 @@ class MoshijuuSearchBar extends PolymerElement {
     return {
       /** Search bar placeholder */
       placeholder: {
-        type: String,
-        value: 'Search Here...',
+        type: String
       },
       /** List of possible matches based on input */
       _matches: {
@@ -121,15 +135,19 @@ class MoshijuuSearchBar extends PolymerElement {
   _computeSearchContainerClass(matches) {
     let cls = 'search-results-container';
     if (matches.length === 0) {
-      cls += ' empty'
+      cls += ' empty';
     }
     return cls;
   }
 
   filterSearchCriteria(value) {
-    this._matches = definedSearchResults.filter((result) => {
-        return result.toLowerCase().includes(value.toLowerCase());
-    });
+    if (value !== '') {
+      this._matches = definedSearchResults.filter((result) => {
+          return result.toLowerCase().includes(value.toLowerCase());
+      });
+    } else {
+      this._matches = [];
+    }
   }
 }
 
