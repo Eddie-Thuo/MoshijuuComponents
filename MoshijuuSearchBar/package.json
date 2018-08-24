@@ -1,5 +1,5 @@
 {
-  "name": "@moshijuu/moshijuu-search-bar",
+  "name": "moshijuu-search-bar",
   "description": "Moshijuu Themed Search Bar",
   "version": "0.0.1",
   "homepage": "https://github.com/Eddie-Thuo/MoshijuuComponents",
@@ -7,6 +7,8 @@
     "@polymer/paper-button": "^3.0.0-pre.20",
     "@polymer/paper-input": "^3.0.0-pre.21",
     "@polymer/iron-input": "^3.0.0-pre.21",
+    "@polymer/iron-icons": "3.0.0-pre.21",
+    "@polymer/paper-icon-button": "3.0.0-pre.21",
     "@polymer/polymer": "^3.0.0"
   },
   "devDependencies": {

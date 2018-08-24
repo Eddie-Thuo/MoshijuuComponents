@@ -1,5 +1,7 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-input/iron-input.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/polymer/lib/elements/dom-repeat.js';
 /**
  * `moshijuu-search-bar`
@@ -42,7 +44,6 @@ class MoshijuuSearchBar extends PolymerElement {
       border: 0px;
       padding: 0px;
       margin-left: 7px;
-      margin-right: 7px;
       background: transparent;
     }
 
@@ -52,6 +53,10 @@ class MoshijuuSearchBar extends PolymerElement {
       outline: none;
       border: 0px;
       background: transparent;
+    }
+
+    paper-icon-button.hovering:hover {
+      color: #F44336;
     }
 
     ul {
@@ -78,6 +83,7 @@ class MoshijuuSearchBar extends PolymerElement {
       <iron-input>
         <input type="text" placeholder$="[[placeholder]]" on-input="_handleInput">
        </iron-input>
+       <paper-icon-button class="hovering" icon$="[[searchIcon]]"></paper-icon-button>
     </div>
     <div class$="[[_computeSearchContainerClass(_matches)]]">
       <ul>
@@ -92,12 +98,18 @@ class MoshijuuSearchBar extends PolymerElement {
   }
   static get properties() {
     return {
+      /** Search bar placeholder */
       placeholder: {
         type: String,
         value: 'Search Here...',
       },
+      /** List of possible matches based on input */
       _matches: {
         type: Array
+      },
+      /** Name of icon used for search button */
+      searchIcon: {
+        type: String
       }
     };
   }
