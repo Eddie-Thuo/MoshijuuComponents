@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>moshijuu-overlay demo</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
+  <script type="module">
+    import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
+    import '@polymer/iron-demo-helpers/demo-snippet';
+  </script>
+
+  <script type="module" src="../moshijuu-overlay.js"></script>
+
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .container {
+        position: relative;
+        width: 400px;
+        height: 300px;
+        border: 1px dashed black;
+      }
+    </style>
+  </custom-style>
+</head>
+
+<body>
+  <div class="vertical-section-container centered">
+    <h3>Basic moshijuu-overlay demo</h3>
+    <demo-snippet>
+      <template>
+        <div class="container">
+          <h2>Example Heading</h2>
+          <input placeholder="Enter value here">
+          <moshijuu-overlay active></moshijuu-overlay>
+        </div>
+      </template>
+    </demo-snippet>
+  </div>
+
+  <div class="vertical-section-container centered">
+    <h3>Basic moshijuu-overlay with dark theme</h3>
+    <demo-snippet>
+      <template>
+        <div class="container">
+          <h2>Example Heading</h2>
+          <input placeholder="Enter value here">
+          <moshijuu-overlay dark active></moshijuu-overlay>
+        </div>
+      </template>
+    </demo-snippet>
+  </div>
+
+  <div class="vertical-section-container centered">
+    <h3>Toggle moshijuu-overlay demo</h3>
+    <demo-snippet>
+      <template>
+        <div class="container">
+          <h2>Example Heading</h2>
+          <input placeholder="Enter value here">
+          <moshijuu-overlay id="overlay" active></moshijuu-overlay>
+        </div>
+        <button id="toggle_btn">Click Here to Toggle!</button>
+      </template>
+    </demo-snippet>
+  </div>
+  <script>
+    document.addEventListener('WebComponentsReady', () => {
+      let overlay = document.getElementById('overlay');
+      let toggleBtn = document.getElementById('toggle_btn');
+      toggleBtn.addEventListener('click', () => {
+        overlay.active = !overlay.active;
+      });
+    });
+  </script>
+</body>
+
+</html>
