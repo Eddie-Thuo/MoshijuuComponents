@@ -13,38 +13,35 @@
   </head>
   <body>
 
-    <test-fixture id="BasicTestFixture">
+    <test-fixture id="active">
       <template>
-        <moshijuu-overlay></moshijuu-overlay>
-      </template>
-    </test-fixture>
-
-    <test-fixture id="ChangedPropertyTestFixture">
-      <template>
-        <moshijuu-overlay prop1="new-prop1"></moshijuu-overlay>
+        <div class="container">
+          <h1>Simple heading</h1>
+          <moshijuu-overlay active></moshijuu-overlay>
+        </div>
       </template>
     </test-fixture>
 
     <script type="module">
       suite('moshijuu-overlay', () => {
-
-        test('instantiating the element with default properties works', () => {
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'moshijuu-overlay');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello moshijuu-overlay!');
+        let simple;
+        let container
+        setup(() => {
+          container = fixture('active');
+          simple = container.querySelector('moshijuu-overlay');
         });
 
-        test('setting a property on the element works', () => {
-          // Create a test fixture
-          const element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+        test('check overlay is active', () => {
+          expect(simple.active).to.be.eql(true);
         });
 
+        test('check sibling elements are not focusable when active', () => {
+          Array.from(container.children).forEach((child) => {
+            if (child !== simple) {
+              expect(child.tabIndex).to.eql(-1);
+            }
+          });
+        });
       });
     </script>
 
