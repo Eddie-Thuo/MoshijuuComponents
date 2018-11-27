@@ -27,7 +27,6 @@ class MoshijuuOverlay extends PolymerElement {
         .overlay {
           position: absolute;
           background-color: var(--moshijuu-overlay-color, white);
-          opacity: 0.7;
           top: 0;
           left: 0;
           width: 100%;
@@ -52,8 +51,24 @@ class MoshijuuOverlay extends PolymerElement {
         type: Boolean,
         reflectToAttribute: true,
         value: false
+      },
+      opacity: {
+        type: Number, 
+        value: 0.7,
+        observer: '_opacityChanged'
       }
     };
+  }
+
+/**
+ * Observes changes to the opacity of the overlay
+ * @param {Number} newOpacity  new opacity value
+ * @param {Number} oldOpacity old opacity value
+ */
+  _opacityChanged(newOpacity, oldOpacity) {
+    if (newOpacity != oldOpacity) {
+      this.shadowRoot.querySelector('.overlay').style.opacity = newOpacity;
+    }
   }
 
   /**
