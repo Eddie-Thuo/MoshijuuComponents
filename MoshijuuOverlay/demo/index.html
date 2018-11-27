@@ -77,6 +77,27 @@
       });
     });
   </script>
+
+<div class="vertical-section-container centered">
+    <h3>Overriding default overlay color</h3>
+    <demo-snippet>
+      <template>
+        <custom-style>
+          <style is="custom-style">
+            .overlay {
+              --moshijuu-overlay-color: orange;
+            }
+          </style>
+        </custom-style>
+        <div class="container">
+          <h2>Example Heading</h2>
+          <input placeholder="Enter value here">
+          <moshijuu-overlay class="overlay" id="overlay" active></moshijuu-overlay>
+        </div>
+        <button id="toggle_btn">Click Here to Toggle!</button>
+      </template>
+    </demo-snippet>
+  </div>
 </body>
 
 </html>

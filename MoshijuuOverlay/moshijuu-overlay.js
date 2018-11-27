@@ -21,13 +21,13 @@ class MoshijuuOverlay extends PolymerElement {
         }
 
         :host([dark]) .overlay {
-          background: #757575;
+          background: var(--moshijuu-overlay-dark-color, #757575);
         }
 
         .overlay {
           position: absolute;
-          background-color: orange;
-          opacity: 0.5;
+          background-color: var(--moshijuu-overlay-color, white);
+          opacity: 0.7;
           top: 0;
           left: 0;
           width: 100%;
