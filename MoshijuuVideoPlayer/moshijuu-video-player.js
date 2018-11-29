@@ -15,16 +15,20 @@ class MoshijuuVideoPlayer extends PolymerElement {
         :host {
           display: block;
         }
+        video {
+          width: 560px;
+          height: 240px;
+          background: lightgray;
+        }
       </style>
-      <h2>Hello [[prop1]]!</h2>
+      <video controls>
+        <source src="/video/sample.mp4" type="video/mp4">
+      </video>
+
     `;
   }
   static get properties() {
     return {
-      prop1: {
-        type: String,
-        value: 'moshijuu-video-player',
-      },
     };
   }
 }
