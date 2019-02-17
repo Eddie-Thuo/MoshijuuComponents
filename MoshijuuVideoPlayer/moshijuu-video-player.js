@@ -20,10 +20,52 @@ class MoshijuuVideoPlayer extends PolymerElement {
           height: 240px;
           background: lightgray;
         }
+        .video-controls {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 40px;
+          background: lightgray;
+        }
+        .track-timeline {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+        .track-bar {
+          position: absolute;
+          width: 100%;
+          height: 2px;
+          top: calc(50% - 1px);
+          background: black;
+        }
+        .fill {
+          background: blueviolet;
+          width: 0px;
+        }
+        .video-track-pointer {
+          position: absolute;
+          left: 0;
+          top: calc(50% - 7px);
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: yellow;
+          cursor: pointer;
+        }
       </style>
-      <video id="video_player" controls>
+      <video id="video_player" on-timeupdate="_updateTrack">
         <source src="/video/sample.mp4" type="video/mp4">
       </video>
+      <div class="video-controls">
+        <div class="track-timeline">
+          <div class="track-bar"></div>
+          <div class="track-bar fill"></div>
+          <span class="video-track-pointer"></span>
+        </div>
+      </div>
     `;
   }
   static get properties() {
@@ -56,12 +98,9 @@ class MoshijuuVideoPlayer extends PolymerElement {
     };    
   }
 
-  ready() {
-    super.ready();
-    this.$['video_player'].addEventListener('timeupdate', (event) => {
-      const currentTime = event.currentTarget.currentTime;
-      console.log('Current Time | ' + currentTime);
-    });
+  _updateTrack(event) {
+    const currentTime = event.currentTarget.currentTime;
+    console.log('Current Time | ' + currentTime);
   }
 
   /**
