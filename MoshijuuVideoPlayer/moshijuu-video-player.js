@@ -56,7 +56,7 @@ class MoshijuuVideoPlayer extends PolymerElement {
           cursor: pointer;
         }
       </style>
-      <video id="video_player" on-timeupdate="_updateTrack">
+      <video id="video_player" on-timeupdate="_updateTrack" on-ended="_handleEnd" controls>
         <source src="/video/sample.mp4" type="video/mp4">
       </video>
       <div class="video-controls">
@@ -101,6 +101,10 @@ class MoshijuuVideoPlayer extends PolymerElement {
   _updateTrack(event) {
     const currentTime = event.currentTarget.currentTime;
     console.log('Current Time | ' + currentTime);
+  }
+
+  _handleEnd() {
+    this.dispatchEvent(new CustomEvent('videoEnded', {detail: {ended: true}}));
   }
 
   /**
