@@ -63,7 +63,7 @@ class MoshijuuVideoPlayer extends PolymerElement {
         <div class="track-timeline">
           <div class="track-bar"></div>
           <div class="track-bar fill"></div>
-          <span class="video-track-pointer"></span>
+          <span id="pointer" class="video-track-pointer"></span>
         </div>
       </div>
     `;
@@ -100,7 +100,10 @@ class MoshijuuVideoPlayer extends PolymerElement {
 
   _updateTrack(event) {
     const currentTime = event.currentTarget.currentTime;
-    console.log('Current Time | ' + currentTime);
+    const duration = event.currentTarget.duration;
+    const progress = currentTime / duration;
+    const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
+    this.$['pointer'].style.left = offset + 'px';
   }
 
   _handleEnd() {
