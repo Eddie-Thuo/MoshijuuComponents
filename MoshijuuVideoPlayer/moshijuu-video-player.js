@@ -128,9 +128,7 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
       const currentTime = event.currentTarget.currentTime;
       const duration = event.currentTarget.duration;
       const progress = currentTime / duration;
-      const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
-      this.$['track_pointer'].style.left = offset + 'px';
-      this.$['track_fill'].style.width = offset + 'px';
+      this._progressTimeline(progress);
     }
   }
 
@@ -143,6 +141,15 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
   _elapsedChanged(progress) {
     const video = this.$['video_player'];
     video.currentTime = video.duration * progress;
+    this._progressTimeline(progress);
+  }
+
+  /**
+   * Progress the timeline
+   * @private
+   * @param {Number} progress 
+   */
+  _progressTimeline(progress) {
     const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
     this.$['track_pointer'].style.left = offset + 'px';
     this.$['track_fill'].style.width = offset + 'px';
