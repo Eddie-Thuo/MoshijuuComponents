@@ -55,17 +55,27 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
           border-radius: 50%;
           background: yellow;
           cursor: pointer;
+          box-sizing: border-box;
+        }
+
+        .video-track-pointer::after {
+          content: '';
+          outline: none;
+          position: absolute;
+          top: -10px;
+          bottom: -10px;
+          left: -10px;
+          right: -10px;
         }
       </style>
       <video id="video_player" on-timeupdate="_updateTrack" on-ended="_handleEnd" controls>
         <source src="/video/sample.mp4" type="video/mp4">
       </video>
-      <div class="video-controls">
-        <div class="track-timeline" on-click="_handleTimelineClick">
-          <div class="track-bar"></div>
-          <div id="track_fill" class="track-bar fill"></div>
-          <span id="track_pointer" class="video-track-pointer" on-track="handleTrack"></span>
-        </div>
+      <div class="video-controls track">
+        <div class="track-timeline" on-click="_handleTimelineClick"></div>
+        <div class="track-bar"></div>
+        <div id="track_fill" class="track-bar fill"></div>
+        <span id="track_pointer" class="video-track-pointer" on-track="_handleTrack"></span>
       </div>
     `;
   }
@@ -75,6 +85,11 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
         type: Boolean,
         value: false,
         reflectToAttribute: true
+      },
+      dragging: {
+        type: Boolean,
+        reflectToAttribute: true,
+        value: false
       },
       muted: {
         type: Boolean,
@@ -100,7 +115,6 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
         type: Number,
         observer: '_elapsedChanged'
       }
-      
     };    
   }
 
@@ -110,13 +124,14 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
    * @param {Object} event 
    */
   _updateTrack(event) {
-    const currentTime = event.currentTarget.currentTime;
-    const duration = event.currentTarget.duration;
-    const progress = currentTime / duration;
-    const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
-    this.$['track_pointer'].style.left = offset + 'px';
-    this.$['track_fill'].style.width = offset + 'px';
-    
+    if (!this.dragging && !this.playing) {
+      const currentTime = event.currentTarget.currentTime;
+      const duration = event.currentTarget.duration;
+      const progress = currentTime / duration;
+      const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
+      this.$['track_pointer'].style.left = offset + 'px';
+      this.$['track_fill'].style.width = offset + 'px';
+    }
   }
 
   /**
@@ -128,6 +143,9 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
   _elapsedChanged(progress) {
     const video = this.$['video_player'];
     video.currentTime = video.duration * progress;
+    const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
+    this.$['track_pointer'].style.left = offset + 'px';
+    this.$['track_fill'].style.width = offset + 'px';
   }
 
   _handleEnd() {
@@ -177,15 +195,28 @@ class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
   }
   
   _handleTrack(event) {
+    const video = this.$['video_player'];
     switch (event.detail.state) {
       case 'start':
-        console.log('Starting Drag');
+        this.dragging = true;
+        this.startleft =  parseInt(event.currentTarget.style.left) || 0;
+        video.muted = true;
         break;
-      case 'track':
-        console.log('Dragging');
+        case 'track':
+        let movedBy = this.startleft + event.detail.dx;
+        if (movedBy < 0) {
+          movedBy = 0;
+        }
+        const trackWidth = event.currentTarget.previousElementSibling.previousElementSibling.offsetWidth;
+        if (movedBy > trackWidth) {
+          movedBy = trackWidth;   
+        }
+        const value = movedBy / trackWidth;
+        this.elapsed = value;
         break;
       case 'end':
-        console.log('End Drag');
+        this.dragging = false;
+        video.muted = true;
         break;
       default:
         break;
