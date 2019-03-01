@@ -1,4 +1,5 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
+import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
 
 /**
  * `moshijuu-video-player`
@@ -8,7 +9,7 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
  * @polymer
  * @demo demo/index.html
  */
-class MoshijuuVideoPlayer extends PolymerElement {
+class MoshijuuVideoPlayer extends GestureEventListeners(PolymerElement) {
   static get template() {
     return html`
       <style>
@@ -20,10 +21,62 @@ class MoshijuuVideoPlayer extends PolymerElement {
           height: 240px;
           background: lightgray;
         }
+        .video-controls {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 40px;
+          background: lightgray;
+        }
+        .track-timeline {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+        .track-bar {
+          position: absolute;
+          width: 100%;
+          height: 2px;
+          top: calc(50% - 1px);
+          background: black;
+        }
+        .fill {
+          background: blueviolet;
+          width: 0px;
+        }
+        .video-track-pointer {
+          position: absolute;
+          left: 0;
+          top: calc(50% - 7px);
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: yellow;
+          cursor: pointer;
+          box-sizing: border-box;
+        }
+
+        .video-track-pointer::after {
+          content: '';
+          outline: none;
+          position: absolute;
+          top: -10px;
+          bottom: -10px;
+          left: -10px;
+          right: -10px;
+        }
       </style>
-      <video id="video_player" controls>
+      <video id="video_player" on-timeupdate="_updateTrack" on-ended="_handleEnd" controls>
         <source src="/video/sample.mp4" type="video/mp4">
       </video>
+      <div class="video-controls track">
+        <div class="track-timeline" on-click="_handleTimelineClick"></div>
+        <div class="track-bar"></div>
+        <div id="track_fill" class="track-bar fill"></div>
+        <span id="track_pointer" class="video-track-pointer" on-track="_handleTrack"></span>
+      </div>
     `;
   }
   static get properties() {
@@ -32,6 +85,11 @@ class MoshijuuVideoPlayer extends PolymerElement {
         type: Boolean,
         value: false,
         reflectToAttribute: true
+      },
+      dragging: {
+        type: Boolean,
+        reflectToAttribute: true,
+        value: false
       },
       muted: {
         type: Boolean,
@@ -52,16 +110,53 @@ class MoshijuuVideoPlayer extends PolymerElement {
         type: Number,
         value: 0.3,
         observer: '_volumeChanged'
+      },
+      elapsed: {
+        type: Number,
+        observer: '_elapsedChanged'
       }
     };    
   }
 
-  ready() {
-    super.ready();
-    this.$['video_player'].addEventListener('timeupdate', (event) => {
+  /**
+   * Updates the timeline progress when the video 
+   * is playing
+   * @param {Object} event 
+   */
+  _updateTrack(event) {
+    if (!this.dragging && !this.playing) {
       const currentTime = event.currentTarget.currentTime;
-      console.log('Current Time | ' + currentTime);
-    });
+      const duration = event.currentTarget.duration;
+      const progress = currentTime / duration;
+      this._progressTimeline(progress);
+    }
+  }
+
+  /**
+   * Update the current time of the video
+   * when clicking a position of the timeline
+   * @private
+   * @param {Number} progress 
+   */
+  _elapsedChanged(progress) {
+    const video = this.$['video_player'];
+    video.currentTime = video.duration * progress;
+    this._progressTimeline(progress);
+  }
+
+  /**
+   * Progress the timeline
+   * @private
+   * @param {Number} progress 
+   */
+  _progressTimeline(progress) {
+    const offset = this.shadowRoot.querySelector('.track-timeline').offsetWidth * progress;
+    this.$['track_pointer'].style.left = offset + 'px';
+    this.$['track_fill'].style.width = offset + 'px';
+  }
+
+  _handleEnd() {
+    this.dispatchEvent(new CustomEvent('videoEnded', {detail: {ended: true}}));
   }
 
   /**
@@ -96,6 +191,45 @@ class MoshijuuVideoPlayer extends PolymerElement {
     this.muted != this.muted;
     this.$['video_player'].muted = this.muted;
   }
+
+  /**
+   * Calculates the click positioning of the timeline
+   * @param {Object} event 
+   */
+  _handleTimelineClick(event) {
+    const clickPos = event.offsetX / event.currentTarget.offsetWidth;
+    this.elapsed = clickPos;
+  }
+  
+  _handleTrack(event) {
+    const video = this.$['video_player'];
+    switch (event.detail.state) {
+      case 'start':
+        this.dragging = true;
+        this.startleft =  parseInt(event.currentTarget.style.left) || 0;
+        video.muted = true;
+        break;
+        case 'track':
+        let movedBy = this.startleft + event.detail.dx;
+        if (movedBy < 0) {
+          movedBy = 0;
+        }
+        const trackWidth = event.currentTarget.previousElementSibling.previousElementSibling.offsetWidth;
+        if (movedBy > trackWidth) {
+          movedBy = trackWidth;   
+        }
+        const value = movedBy / trackWidth;
+        this.elapsed = value;
+        break;
+      case 'end':
+        this.dragging = false;
+        video.muted = true;
+        break;
+      default:
+        break;
+    }  
+  }
+    
 }
 
 window.customElements.define('moshijuu-video-player', MoshijuuVideoPlayer);
